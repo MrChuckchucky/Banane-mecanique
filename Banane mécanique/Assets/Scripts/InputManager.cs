@@ -53,14 +53,49 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("vrp2");
         }*/
-        Vector3 look = new Vector3(Input.GetAxis("VerticalLeftPlayer1") * -1 + P1LeftArm.transform.position.x, P1LeftArm.transform.position.y, Input.GetAxis("HorizontalLeftPlayer1") * -1 + P1LeftArm.transform.position.z);
-        P1LeftArm.transform.LookAt(look);
-        look = new Vector3(Input.GetAxis("VerticalRightPlayer1") + P1RightArm.transform.position.x, P1RightArm.transform.position.y, Input.GetAxis("HorizontalRightPlayer1") + P1RightArm.transform.position.z);
-        P1RightArm.transform.LookAt(look);
 
-        look = new Vector3(Input.GetAxis("VerticalLeftPlayer2") * -1 + P2LeftArm.transform.position.x, P2LeftArm.transform.position.y, Input.GetAxis("HorizontalLeftPlayer2") * -1 + P2LeftArm.transform.position.z);
-        P2LeftArm.transform.LookAt(look);
-        look = new Vector3(Input.GetAxis("VerticalRightPlayer2") + P2RightArm.transform.position.x, P2RightArm.transform.position.y, Input.GetAxis("HorizontalRightPlayer2") + P2RightArm.transform.position.z);
-        P2RightArm.transform.LookAt(look);
+        if(Input.GetAxis("VerticalLeftPlayer1") <= tolerance && Input.GetAxis("VerticalLeftPlayer1") >= -tolerance && Input.GetAxis("HorizontalLeftPlayer1") <= tolerance && Input.GetAxis("HorizontalLeftPlayer1") >= -tolerance)
+        {
+            P1LeftArm.transform.eulerAngles = new Vector3(0, 0, 90);
+        }
+        else
+        {
+            P1LeftArm.transform.eulerAngles = new Vector3(0, 0, 0);
+            Vector3 look = new Vector3(Input.GetAxis("VerticalLeftPlayer1") * -1 + P1LeftArm.transform.position.x, P1LeftArm.transform.position.y, Input.GetAxis("HorizontalLeftPlayer1") * -1 + P1LeftArm.transform.position.z);
+            P1LeftArm.transform.LookAt(look);
+        }
+
+        if (Input.GetAxis("VerticalRightPlayer1") <= tolerance && Input.GetAxis("VerticalRightPlayer1") >= -tolerance && Input.GetAxis("HorizontalRightPlayer1") <= tolerance && Input.GetAxis("HorizontalRightPlayer1") >= -tolerance)
+        {
+            P1RightArm.transform.eulerAngles = new Vector3(0, 0, 90);
+        }
+        else
+        {
+            P1RightArm.transform.eulerAngles = new Vector3(0, 0, 0);
+            Vector3 look = new Vector3(Input.GetAxis("VerticalRightPlayer1") + P1RightArm.transform.position.x, P1RightArm.transform.position.y, Input.GetAxis("HorizontalRightPlayer1") + P1RightArm.transform.position.z);
+            P1RightArm.transform.LookAt(look);
+        }
+
+        if (Input.GetAxis("VerticalLeftPlayer2") <= tolerance && Input.GetAxis("VerticalLeftPlayer2") >= -tolerance && Input.GetAxis("HorizontalLeftPlayer2") <= tolerance && Input.GetAxis("HorizontalLeftPlayer2") >= -tolerance)
+        {
+            P2LeftArm.transform.eulerAngles = new Vector3(0, 0, 90);
+        }
+        else
+        {
+            P2LeftArm.transform.eulerAngles = new Vector3(0, 0, 0);
+            Vector3 look = new Vector3(Input.GetAxis("VerticalLeftPlayer2") * -1 + P2LeftArm.transform.position.x, P2LeftArm.transform.position.y, Input.GetAxis("HorizontalLeftPlayer2") * -1 + P2LeftArm.transform.position.z);
+            P2LeftArm.transform.LookAt(look);
+        }
+
+        if (Input.GetAxis("VerticalRightPlayer2") <= tolerance && Input.GetAxis("VerticalRightPlayer2") >= -tolerance && Input.GetAxis("HorizontalRightPlayer2") <= tolerance && Input.GetAxis("HorizontalRightPlayer2") >= -tolerance)
+        {
+            P2RightArm.transform.eulerAngles = new Vector3(0, 0, 90);
+        }
+        else
+        {
+            P2RightArm.transform.eulerAngles = new Vector3(0, 0, 0);
+            Vector3 look = new Vector3(Input.GetAxis("VerticalRightPlayer2") + P2RightArm.transform.position.x, P2RightArm.transform.position.y, Input.GetAxis("HorizontalRightPlayer2") + P2RightArm.transform.position.z);
+            P2RightArm.transform.LookAt(look);
+        }
     }
 }
