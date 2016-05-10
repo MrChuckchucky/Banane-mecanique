@@ -4,6 +4,8 @@ using System.Collections;
 public class InputManager : MonoBehaviour
 {
     public float tolerance;
+    public float backAngles;
+    public float frontAngles;
 
     GameObject P1LeftArm;
     GameObject P1RightArm;
@@ -21,81 +23,62 @@ public class InputManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        /*if(Input.GetAxis("HorizontalLeftPlayer1") >= tolerance || Input.GetAxis("HorizontalLeftPlayer1") <= -tolerance)
-        {
-            Debug.Log("hlp1");
-        }
-        if (Input.GetAxis("VerticalLeftPlayer1") >= tolerance || Input.GetAxis("VerticalLeftPlayer1") <= -tolerance)
-        {
-            Debug.Log("vlp1");
-        }
-        if (Input.GetAxis("HorizontalRightPlayer1") >= tolerance || Input.GetAxis("HorizontalRightPlayer1") <= -tolerance)
-        {
-            Debug.Log("hrp1");
-        }
-        if (Input.GetAxis("VerticalRightPlayer1") >= tolerance || Input.GetAxis("VerticalRightPlayer1") <= -tolerance)
-        {
-            Debug.Log("vrp1");
-        }
-        if (Input.GetAxis("HorizontalLeftPlayer2") >= tolerance || Input.GetAxis("HorizontalLeftPlayer2") <= -tolerance)
-        {
-            Debug.Log("hlp2");
-        }
-        if (Input.GetAxis("VerticalLeftPlayer2") >= tolerance || Input.GetAxis("VerticalLeftPlayer2") <= -tolerance)
-        {
-            Debug.Log("vlp2");
-        }
-        if (Input.GetAxis("HorizontalRightPlayer2") >= tolerance || Input.GetAxis("HorizontalRightPlayer2") <= -tolerance)
-        {
-            Debug.Log("hrp2");
-        }
-        if (Input.GetAxis("VerticalRightPlayer2") >= tolerance || Input.GetAxis("VerticalRightPlayer2") <= -tolerance)
-        {
-            Debug.Log("vrp2");
-        }*/
+        MoveArmLeft(P1LeftArm, "LeftPlayer1");
+        MoveArmRight(P1RightArm, "RightPlayer1");
+        MoveArmLeft(P2LeftArm, "LeftPlayer2");
+        MoveArmRight(P2RightArm, "RightPlayer2");
+    }
 
-        if(Input.GetAxis("VerticalLeftPlayer1") <= tolerance && Input.GetAxis("VerticalLeftPlayer1") >= -tolerance && Input.GetAxis("HorizontalLeftPlayer1") <= tolerance && Input.GetAxis("HorizontalLeftPlayer1") >= -tolerance)
+    void MoveArmRight(GameObject arm, string input)
+    {
+        string input1 = "Vertical" + input;
+        string input2 = "Horizontal" + input;
+        if (Input.GetAxis(input1) <= tolerance && Input.GetAxis(input1) >= -tolerance && Input.GetAxis(input2) <= tolerance && Input.GetAxis(input2) >= -tolerance)
         {
-            P1LeftArm.transform.eulerAngles = new Vector3(0, 0, 90);
+            arm.transform.eulerAngles = new Vector3(0, 0, 90);
         }
         else
         {
-            P1LeftArm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(Input.GetAxis("VerticalLeftPlayer1") * -1 + P1LeftArm.transform.position.x, P1LeftArm.transform.position.y, Input.GetAxis("HorizontalLeftPlayer1") * -1 + P1LeftArm.transform.position.z);
-            P1LeftArm.transform.LookAt(look);
+            arm.transform.eulerAngles = new Vector3(0, 0, 0);
+            Vector3 look = new Vector3(Input.GetAxis(input1) + arm.transform.position.x, arm.transform.position.y, Input.GetAxis(input2) + arm.transform.position.z);
+            arm.transform.LookAt(look);
+            if(arm.transform.localEulerAngles.y > backAngles && arm.transform.localEulerAngles.y < 360 - frontAngles)
+            {
+                if (Mathf.Abs(arm.transform.localEulerAngles.y - (360 - frontAngles)) < Mathf.Abs(arm.transform.localEulerAngles.y - backAngles))
+                {
+                    arm.transform.localEulerAngles = new Vector3(0, 360 - frontAngles, 0);
+                }
+                else
+                {
+                    arm.transform.localEulerAngles = new Vector3(0, backAngles, 0);
+                }
+            }
         }
-
-        if (Input.GetAxis("VerticalRightPlayer1") <= tolerance && Input.GetAxis("VerticalRightPlayer1") >= -tolerance && Input.GetAxis("HorizontalRightPlayer1") <= tolerance && Input.GetAxis("HorizontalRightPlayer1") >= -tolerance)
+    }
+    void MoveArmLeft(GameObject arm, string input)
+    {
+        string input1 = "Vertical" + input;
+        string input2 = "Horizontal" + input;
+        if (Input.GetAxis(input1) <= tolerance && Input.GetAxis(input1) >= -tolerance && Input.GetAxis(input2) <= tolerance && Input.GetAxis(input2) >= -tolerance)
         {
-            P1RightArm.transform.eulerAngles = new Vector3(0, 0, 90);
-        }
-        else
-        {
-            P1RightArm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(Input.GetAxis("VerticalRightPlayer1") + P1RightArm.transform.position.x, P1RightArm.transform.position.y, Input.GetAxis("HorizontalRightPlayer1") + P1RightArm.transform.position.z);
-            P1RightArm.transform.LookAt(look);
-        }
-
-        if (Input.GetAxis("VerticalLeftPlayer2") <= tolerance && Input.GetAxis("VerticalLeftPlayer2") >= -tolerance && Input.GetAxis("HorizontalLeftPlayer2") <= tolerance && Input.GetAxis("HorizontalLeftPlayer2") >= -tolerance)
-        {
-            P2LeftArm.transform.eulerAngles = new Vector3(0, 0, 90);
-        }
-        else
-        {
-            P2LeftArm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(Input.GetAxis("VerticalLeftPlayer2") * -1 + P2LeftArm.transform.position.x, P2LeftArm.transform.position.y, Input.GetAxis("HorizontalLeftPlayer2") * -1 + P2LeftArm.transform.position.z);
-            P2LeftArm.transform.LookAt(look);
-        }
-
-        if (Input.GetAxis("VerticalRightPlayer2") <= tolerance && Input.GetAxis("VerticalRightPlayer2") >= -tolerance && Input.GetAxis("HorizontalRightPlayer2") <= tolerance && Input.GetAxis("HorizontalRightPlayer2") >= -tolerance)
-        {
-            P2RightArm.transform.eulerAngles = new Vector3(0, 0, 90);
+            arm.transform.eulerAngles = new Vector3(0, 0, -90);
         }
         else
         {
-            P2RightArm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(Input.GetAxis("VerticalRightPlayer2") + P2RightArm.transform.position.x, P2RightArm.transform.position.y, Input.GetAxis("HorizontalRightPlayer2") + P2RightArm.transform.position.z);
-            P2RightArm.transform.LookAt(look);
+            arm.transform.eulerAngles = new Vector3(0, 0, 0);
+            Vector3 look = new Vector3(Input.GetAxis(input1) * -1 + arm.transform.position.x, arm.transform.position.y, Input.GetAxis(input2) * -1 + arm.transform.position.z);
+            arm.transform.LookAt(look);
+            if(arm.transform.localEulerAngles.y > frontAngles && arm.transform.localEulerAngles.y < 360 - backAngles)
+            {
+                if(Mathf.Abs(arm.transform.localEulerAngles.y - frontAngles) < Mathf.Abs(arm.transform.localEulerAngles.y - (360 - backAngles)))
+                {
+                    arm.transform.localEulerAngles = new Vector3(0, frontAngles, 0);
+                }
+                else
+                {
+                    arm.transform.localEulerAngles = new Vector3(0, 360 - backAngles, 0);
+                }
+            }
         }
     }
 }
