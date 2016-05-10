@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using XInputDotNetPure;
 
 public class InputManager : MonoBehaviour
 {
+    bool playerIndexSet = false;
+    PlayerIndex playerIndex;
+    GamePadState state;
+    GamePadState prevState;
+
     public float tolerance;
     public float backAngles;
     public float frontAngles;
@@ -23,26 +29,43 @@ public class InputManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        MoveArmLeft(P1LeftArm, "LeftPlayer1");
-        MoveArmRight(P1RightArm, "RightPlayer1");
-        MoveArmLeft(P2LeftArm, "LeftPlayer2");
-        MoveArmRight(P2RightArm, "RightPlayer2");
+        if (!playerIndexSet || !prevState.IsConnected)
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                PlayerIndex testPlayerIndex = (PlayerIndex)i;
+                GamePadState testState = GamePad.GetState(testPlayerIndex);
+                if (testState.IsConnected)
+                {
+                    Debug.Log(string.Format("GamePad found {0}", testPlayerIndex));
+                    playerIndex = testPlayerIndex;
+                    playerIndexSet = true;
+                }
+            }
+        }
+
+        prevState = state;
+        state = GamePad.GetState(playerIndex);
+
+        MoveArmLeft(P1LeftArm, 1);
+        MoveArmRight(P1RightArm, 1);
+        MoveArmLeft(P2LeftArm, 2);
+        MoveArmRight(P2RightArm, 2);
+        
     }
 
-    void MoveArmRight(GameObject arm, string input)
+    void MoveArmRight(GameObject arm, int index)
     {
-        string input1 = "Vertical" + input;
-        string input2 = "Horizontal" + input;
-        if (Input.GetAxis(input1) <= tolerance && Input.GetAxis(input1) >= -tolerance && Input.GetAxis(input2) <= tolerance && Input.GetAxis(input2) >= -tolerance)
+        if(XInput.instance.getYStickRight(index) <= tolerance && XInput.instance.getYStickRight(index) >= -tolerance && XInput.instance.getXStickRight(index) <= tolerance && XInput.instance.getXStickRight(index) >= -tolerance)
         {
             arm.transform.eulerAngles = new Vector3(0, 0, 90);
         }
         else
         {
             arm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(Input.GetAxis(input1) + arm.transform.position.x, arm.transform.position.y, Input.GetAxis(input2) + arm.transform.position.z);
+            Vector3 look = new Vector3(XInput.instance.getYStickRight(index) * -1 + arm.transform.position.x, arm.transform.position.y, XInput.instance.getXStickRight(index) + arm.transform.position.z);
             arm.transform.LookAt(look);
-            if(arm.transform.localEulerAngles.y > backAngles && arm.transform.localEulerAngles.y < 360 - frontAngles)
+            if (arm.transform.localEulerAngles.y > backAngles && arm.transform.localEulerAngles.y < 360 - frontAngles)
             {
                 if (Mathf.Abs(arm.transform.localEulerAngles.y - (360 - frontAngles)) < Mathf.Abs(arm.transform.localEulerAngles.y - backAngles))
                 {
@@ -55,22 +78,20 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-    void MoveArmLeft(GameObject arm, string input)
+    void MoveArmLeft(GameObject arm, int index)
     {
-        string input1 = "Vertical" + input;
-        string input2 = "Horizontal" + input;
-        if (Input.GetAxis(input1) <= tolerance && Input.GetAxis(input1) >= -tolerance && Input.GetAxis(input2) <= tolerance && Input.GetAxis(input2) >= -tolerance)
+        if (XInput.instance.getYStickLeft(index) <= tolerance && XInput.instance.getYStickLeft(index) >= -tolerance && XInput.instance.getXStickLeft(index) <= tolerance && XInput.instance.getXStickLeft(index) >= -tolerance)
         {
             arm.transform.eulerAngles = new Vector3(0, 0, -90);
         }
         else
         {
             arm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(Input.GetAxis(input1) * -1 + arm.transform.position.x, arm.transform.position.y, Input.GetAxis(input2) * -1 + arm.transform.position.z);
+            Vector3 look = new Vector3(XInput.instance.getYStickLeft(index) + arm.transform.position.x, arm.transform.position.y, XInput.instance.getXStickLeft(index) * -1 + arm.transform.position.z);
             arm.transform.LookAt(look);
-            if(arm.transform.localEulerAngles.y > frontAngles && arm.transform.localEulerAngles.y < 360 - backAngles)
+            if (arm.transform.localEulerAngles.y > frontAngles && arm.transform.localEulerAngles.y < 360 - backAngles)
             {
-                if(Mathf.Abs(arm.transform.localEulerAngles.y - frontAngles) < Mathf.Abs(arm.transform.localEulerAngles.y - (360 - backAngles)))
+                if (Mathf.Abs(arm.transform.localEulerAngles.y - frontAngles) < Mathf.Abs(arm.transform.localEulerAngles.y - (360 - backAngles)))
                 {
                     arm.transform.localEulerAngles = new Vector3(0, frontAngles, 0);
                 }
