@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     public float tolerance;
     public float backAngles;
     public float frontAngles;
+    public float rotateSpeed;
 
     GameObject P1LeftArm;
     GameObject P1RightArm;
@@ -51,7 +52,18 @@ public class InputManager : MonoBehaviour
         MoveArmRight(P1RightArm, 1);
         MoveArmLeft(P2LeftArm, 2);
         MoveArmRight(P2RightArm, 2);
-        
+
+        if((XInput.instance.getButton(1, 'L') == ButtonState.Released || XInput.instance.getButton(1, 'R') == ButtonState.Released) && (XInput.instance.getButton(2, 'L') == ButtonState.Released || XInput.instance.getButton(2, 'R') == ButtonState.Released))
+        {
+            if (XInput.instance.getButton(1, 'L') == ButtonState.Pressed && XInput.instance.getButton(2, 'L') == ButtonState.Pressed)
+            {
+                GameObject.FindGameObjectWithTag("Player").transform.eulerAngles += new Vector3(0, -rotateSpeed * Time.deltaTime, 0);
+            }
+            if (XInput.instance.getButton(1, 'R') == ButtonState.Pressed && XInput.instance.getButton(2, 'R') == ButtonState.Pressed)
+            {
+                GameObject.FindGameObjectWithTag("Player").transform.eulerAngles += new Vector3(0, rotateSpeed * Time.deltaTime, 0);
+            }
+        }
     }
 
     void MoveArmRight(GameObject arm, int index)
