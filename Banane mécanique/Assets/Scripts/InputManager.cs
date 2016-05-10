@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     public float backAngles;
     public float frontAngles;
     public float rotateSpeed;
+    public float armMoveSpeed;
     public float coolDown;
 
     float cdArmLeftP1;
@@ -91,13 +92,18 @@ public class InputManager : MonoBehaviour
     {
         if(XInput.instance.getYStickRight(index) <= tolerance && XInput.instance.getYStickRight(index) >= -tolerance && XInput.instance.getXStickRight(index) <= tolerance && XInput.instance.getXStickRight(index) >= -tolerance)
         {
-            arm.transform.eulerAngles = new Vector3(0, 0, 90);
         }
         else
         {
-            arm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(XInput.instance.getYStickRight(index) * -1 + arm.transform.position.x, arm.transform.position.y, XInput.instance.getXStickRight(index) + arm.transform.position.z);
-            arm.transform.LookAt(look);
+            Vector3 look = new Vector3(XInput.instance.getYStickRight(index) * -1 + arm.transform.position.x, arm.transform.position.y, XInput.instance.getXStickRight(index) * -1 + arm.transform.position.z);
+            Vector3 forward = transform.forward;
+            Vector3 toOther = arm.transform.position - look;
+            float angle = Vector3.Angle(forward, toOther);
+            if(look.x < 0)
+            {
+                angle *= -1;
+            }
+            arm.transform.rotation = Quaternion.Slerp(arm.transform.rotation, Quaternion.Euler(0, angle, 0), Time.deltaTime * armMoveSpeed);
             if (arm.transform.localEulerAngles.y > backAngles && arm.transform.localEulerAngles.y < 360 - frontAngles)
             {
                 if (Mathf.Abs(arm.transform.localEulerAngles.y - (360 - frontAngles)) < Mathf.Abs(arm.transform.localEulerAngles.y - backAngles))
@@ -116,13 +122,18 @@ public class InputManager : MonoBehaviour
     {
         if (XInput.instance.getYStickLeft(index) <= tolerance && XInput.instance.getYStickLeft(index) >= -tolerance && XInput.instance.getXStickLeft(index) <= tolerance && XInput.instance.getXStickLeft(index) >= -tolerance)
         {
-            arm.transform.eulerAngles = new Vector3(0, 0, -90);
         }
         else
         {
-            arm.transform.eulerAngles = new Vector3(0, 0, 0);
-            Vector3 look = new Vector3(XInput.instance.getYStickLeft(index) + arm.transform.position.x, arm.transform.position.y, XInput.instance.getXStickLeft(index) * -1 + arm.transform.position.z);
-            arm.transform.LookAt(look);
+            Vector3 look = new Vector3(XInput.instance.getYStickLeft(index) + arm.transform.position.x, arm.transform.position.y, XInput.instance.getXStickLeft(index) + arm.transform.position.z);
+            Vector3 forward = transform.forward;
+            Vector3 toOther = arm.transform.position - look;
+            float angle = Vector3.Angle(forward, toOther);
+            if (look.x < 0)
+            {
+                angle *= -1;
+            }
+            arm.transform.rotation = Quaternion.Slerp(arm.transform.rotation, Quaternion.Euler(0, angle, 0), Time.deltaTime * armMoveSpeed);
             if (arm.transform.localEulerAngles.y > frontAngles && arm.transform.localEulerAngles.y < 360 - backAngles)
             {
                 if (Mathf.Abs(arm.transform.localEulerAngles.y - frontAngles) < Mathf.Abs(arm.transform.localEulerAngles.y - (360 - backAngles)))
