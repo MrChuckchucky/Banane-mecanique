@@ -27,7 +27,7 @@ public class InputManager : MonoBehaviour
     GameObject P2RightArm;
     GameObject bullet;
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         P1LeftArm = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetChild(1).gameObject;
         P1RightArm = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetChild(0).gameObject;
@@ -37,9 +37,9 @@ public class InputManager : MonoBehaviour
         cdArmLeftP1 = cdArmRightP1 = cdArmLeftP2 = cdArmRightP2 = 0;
         bullet = Resources.Load("Bullet") as GameObject;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         cdArmLeftP1 -= Time.deltaTime;
         cdArmRightP1 -= Time.deltaTime;
@@ -90,7 +90,7 @@ public class InputManager : MonoBehaviour
     }
     void MoveArmRight(GameObject arm, int index)
     {
-        if(XInput.instance.getYStickRight(index) <= tolerance && XInput.instance.getYStickRight(index) >= -tolerance && XInput.instance.getXStickRight(index) <= tolerance && XInput.instance.getXStickRight(index) >= -tolerance)
+        if (XInput.instance.getYStickRight(index) <= tolerance && XInput.instance.getYStickRight(index) >= -tolerance && XInput.instance.getXStickRight(index) <= tolerance && XInput.instance.getXStickRight(index) >= -tolerance)
         {
         }
         else
@@ -99,7 +99,7 @@ public class InputManager : MonoBehaviour
             Vector3 forward = transform.forward;
             Vector3 toOther = arm.transform.position - look;
             float angle = Vector3.Angle(forward, toOther);
-            if(look.x < 0)
+            if (look.x < 0)
             {
                 angle *= -1;
             }
@@ -150,11 +150,11 @@ public class InputManager : MonoBehaviour
     }
     void CanShoot(string side, int index)
     {
-        if(side == "Right")
+        if (side == "Right")
         {
             if (index == 1)
             {
-                if(cdArmRightP1 <= 0)
+                if (cdArmRightP1 <= 0)
                 {
                     Shoot(P1RightArm, index);
                     cdArmRightP1 = coolDown;
@@ -169,7 +169,7 @@ public class InputManager : MonoBehaviour
                 }
             }
         }
-        else if(side == "Left")
+        else if (side == "Left")
         {
             if (index == 1)
             {
